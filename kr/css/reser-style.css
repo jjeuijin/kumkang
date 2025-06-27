@@ -1,0 +1,114 @@
+/*! CSS Used from: https://kokuryu-restaurant.com/wp-includes/css/dist/block-library/style.min.css?ver=6.8.1 ; media=all */
+@media all{
+    ul{box-sizing:border-box;}
+}
+/*! CSS Used from: https://kokuryu-restaurant.com/wp-content/themes/originaltheme/assets/css/style.css?ver=1750129853 ; media=all */
+@media all{
+    *,*::before,*::after{box-sizing:border-box;}
+    h1{margin:0;}
+    ul{list-style:none;margin:0;padding:0;}
+    a:not([class]){-webkit-text-decoration-skip:ink;text-decoration-skip-ink:auto;}
+    img{max-width:100%;display:block;}
+    button,select{font:inherit;}
+    @media (prefers-reduced-motion: reduce){
+        *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important;}
+    }
+    a{text-decoration:none;color:inherit;transition:opacity 0.3s;}
+    @media screen and (min-width: 768px){
+        a:hover{opacity:0.8;}
+    }
+    .l-header{position:fixed;z-index:900;top:0;right:0;left:0;display:none;}
+    .p-fv__nav-lang{display:flex;justify-content:center;align-items:center;}
+    @media screen and (min-width: 768px){
+        .p-fv__nav-lang{max-width:-moz-fit-content;max-width:fit-content;justify-content:right;margin-left:auto;}
+    }
+    .p-fv__nav-lang__title{font-size:0.875rem;color:#fff;font-weight:700;position:relative;display:block;cursor:pointer;}
+    .p-fv__nav-lang__title::before{content:"";position:absolute;width:1.25rem;height:1.25rem;top:50%;transform:translateY(-50%);left:-1.875rem;background-image:url(https://kokuryu-restaurant.com/wp-content/themes/originaltheme/assets/images/common/language_logo.png);background-size:contain;background-repeat:no-repeat;}
+    @media screen and (min-width: 768px){
+        .p-fv__nav-lang__title::after{content:"";position:absolute;bottom:-0.9375rem;left:-2.5rem;width:8.75rem;height:1px;background-color:#fff;}
+    }
+    .p-fv__nav-lang-area{position:relative;}
+    .p-fv__nav-lang-area::after{content:"";position:absolute;top:0.75rem;right:0.5rem;width:0.4375rem;height:0.4375rem;background-image:url(https://kokuryu-restaurant.com/wp-content/themes/originaltheme/assets/images/common/triangle.png);background-size:contain;background-repeat:no-repeat;z-index:3;}
+    @media screen and (min-width: 768px){
+        .p-fv__nav-lang-area::after{right:0;}
+    }
+    .p-fv__nav-lang__select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background:none;outline:none;border:none;font-size:0.875rem;background:none;border:none;color:#fff;padding-right:1.25rem;text-align:center;}
+    @media screen and (min-width: 768px){
+        .p-fv__nav-lang__select{padding-right:0.625rem;}
+    }
+    .p-fv__nav-lang__select option{color:#000;}
+    .p-fv__nav-contact{display:none;}
+    .p-fv__nav-contact a{background-color:#aa893a;padding:10px;color:#fff;font-size:14px;font-weight:500;text-align:center;}
+    @media screen and (min-width: 768px){
+        .p-fv__nav-contact{display:none;}
+    }
+    .p-header{background-color:#000;}
+    @media screen and (min-width: 768px){
+        .p-header{height:4.375rem;box-shadow:0px 3.5px 2.5px 0px rgba(0, 0, 0, 0.4);}
+    }
+    .l-header.is-scroll{background-color:#000;display:block;box-shadow:0px 3.5px 2.5px 0px rgba(0, 0, 0, 0.4);}
+    @media screen and (max-width: 768px){
+        .l-header{display:none;}
+        .l-header.is-scroll .p-header__scroll-logo{display:block;}
+    }
+    .p-header__inner{padding-left:0.9375rem;height:inherit;display:flex;justify-content:space-between;padding-top:0.25rem;}
+    @media screen and (min-width: 768px){
+        .l-header.is-scroll{background-color:#000;padding-bottom:1.25rem;display:block;}
+        .p-header__inner{padding-top:initial;padding-left:3.125rem;align-items:flex-start;}
+    }
+    .p-header__logo{max-width:5.6875rem;width:100%;height:inherit;z-index:3;}
+    @media screen and (min-width: 768px){
+        .p-header__logo{max-width:5.6875rem;}
+    }
+    .p-header__logo a{height:inherit;display:flex;align-items:center;}
+    .p-header__logo img{width:100%;height:100%;-o-object-fit:contain;object-fit:contain;}
+    @media screen and (max-width: 768px){
+        .p-header__logo{height:80px;}
+        .p-header__logo a{height:100%;}
+    }
+    .p-fv__nav-contact{z-index:3;}
+    .p-header__nav{display:none;height:inherit;}
+    @media screen and (min-width: 768px){
+        .p-header__nav{display:block;}
+    }
+    .p-header__nav-list{display:flex;height:inherit;}
+    .p-header__nav-item{height:inherit;}
+    .p-header__nav-item.language{display:none;}
+    @media screen and (min-width: 768px){
+        .p-header__nav-item.language{display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;padding:0 1.25rem 0 1.5rem;}
+        .p-header__nav-item.language:after{content:"";position:absolute;top:52%;right:0.5rem;width:0.5rem;height:0.5rem;background-image:url(https://kokuryu-restaurant.com/wp-content/themes/originaltheme/assets/images/common/triangle.png);background-size:contain;background-repeat:no-repeat;z-index:-1;}
+    }
+    .p-header__nav-item.p-header__nav-item--contact{margin-left:0.9375rem;display:flex;align-items:center;}
+    .p-header__nav-item a{padding:0 1.25rem;height:inherit;display:flex;align-items:center;font-size:0.875rem;font-weight:500;line-height:1;color:#fff;text-transform:uppercase;}
+    .p-header__nav-item.p-header__nav-item--contact a{padding:0.625rem 3.75rem;text-align:center;justify-content:center;color:#fff;background-color:#aa893a;}
+    .p-header__menu{display:flex;align-items:center;gap:0.5rem;}
+    @media screen and (min-width: 768px){
+        .p-header__menu{display:none;}
+    }
+    .p-header__menu .p-fv__nav-contact{display:block;}
+    .p-header__menu .p-fv__nav-lang{z-index:3;}
+    .p-header__hamburger{margin:0;padding:0;outline:none;border:none;position:relative;z-index:999;width:2.5rem;height:2.5rem;height:inherit;background-color:transparent;cursor:pointer;transition:0.3s;}
+    @media screen and (min-width: 768px){
+        .p-header__hamburger{display:none;}
+    }
+    .p-header__hamburger span{position:relative;left:50%;transform:translateX(-50%);display:block;width:1.25rem;height:1px;background-color:#fff;transition:0.5s;}
+    .p-header__hamburger span:nth-of-type(1){top:-0.25rem;}
+    .p-header__hamburger span:nth-of-type(2){top:0;}
+    .p-header__hamburger span:nth-of-type(3){top:0.25rem;}
+    .p-header__drawer{padding:3rem 1.25rem;position:fixed;z-index:100;top:0;right:-120%;width:100%;height:100vh;background-color:#aa893a;overflow-y:scroll;scrollbar-width:none;transition:0.6s;}
+    .p-header__drawer::-webkit-scrollbar{display:none;}
+    .p-header__drawer-item a{padding:0.9375rem 0;display:block;font-size:0.875rem;font-weight:700;line-height:1;letter-spacing:0.05em;color:#fff;text-transform:uppercase;border-bottom:0.0625rem solid #fff;}
+    .p-fv__nav-contact .kr{display:none;}
+    .p-fv__nav-contact .kr{display:none;font-style:normal;}
+    .page-template-page-kr-php .p-fv__nav-contact .kr{display:block;}
+    .page-template-page-kr-php .p-fv__nav-contact .kr{display:inline;}
+    @media screen and (max-width: 768px){
+        .p-fv__nav-contact a{display:block;}
+    }
+    .page-template-page-kr-php .p-fv__nav-contact .kr{display:block;}
+    .page-template-page-kr-php .p-fv__nav-contact a span{display:none;}
+    @media screen and (max-width: 768px){
+        .p-fv__nav-contact a{display:block;}
+    }
+    .page-template-page-kr-php .p-fv__nav-contact span{display:none;}
+}
