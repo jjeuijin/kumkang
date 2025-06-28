@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>「금강｜냐베의 한국식 모던 공간에서 맛보는 사계절의 한국요리」</title>
+  <meta name="description" content="호치민 냐베의 한국음식점 “금강”. 사계절의 제철 식재료를 살린 한국 요리를 엄선한 한국식 모던 공간에서 만끽. 제공하는 것은, 한국산을 중심으로 한 엄선 식재료를 사용한 코스 1종류만. 눈앞에서 조리 · 담는 라이브감 넘치는 체험과 요리에 맞춘 엄선 모든 종류의 술을 준비. 고급 공간에서 미식과 미술을 맛보는 행복의 한때를 즐겨 보세요.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ✅ 폰트 및 스타일 -->
+  <link rel="icon" href="../wp-content/themes/originaltheme/assets/images/common/favicon.ico" />
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    @font-face {
+      font-family: 'Chosunilbo_myungjo';
+      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');
+    }
+    body {
+      font-family: 'Chosunilbo_myungjo', serif;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 40px;
+    }
+    #reservation-status-wrapper, .container {
+      max-width: 900px;
+      margin: auto;
+    }
+    .container {
+      display: flex;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+    .calendar-section, .form-section {
+      flex: 1;
+      padding: 30px;
+    }
+    .calendar-section {
+      background-color: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid #e5e7eb;
+    }
+    label {
+      display: inline-block;
+      padding: 6px 12px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #fff;
+      background: url('img/label-background.png') center center / cover no-repeat;
+      border-radius: 6px;
+      transform: rotate(-2.5deg);
+      margin-bottom: 6px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 15px;
+      background: #fff;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+    button {
+      background-color: #6366f1;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #4f46e5;
+    }
+    .calendar-section::before {
+      content: "";
+      position: absolute;
+      top: 100px; left: 0; right: 0; bottom: 0;
+      background: url('img/kk.jpg') center center / cover no-repeat;
+      opacity: 0.7;
+      z-index: -1;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .flatpickr-calendar {
+      font-family: 'Chosunilbo_myungjo', serif;
+    }
+    @media screen and (max-width: 767px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .calendar-section,
+      .form-section {
+        padding: 20px;
+      }
+    }
+
+    /*! CSS Used from: https://kokuryu-restaurant.com/wp-includes/css/dist/block-library/style.min.css?ver=6.8.1 ; media=all */
+    @media all{
+      ul{box-sizing:border-box;}
+    }
+    /*! CSS Used from: https://kokuryu-restaurant.com/wp-content/themes/originaltheme/assets/css/style.css?ver=1750129853 ; media=all */
+    @media all{
+      *,*::before,*::after{box-sizing:border-box;}
+      h1{margin:0;}
+      ul{list-style:none;margin:0;padding:0;}
+      a:not([class]){-webkit-text-decoration-skip:ink;text-decoration-skip-ink:auto;}
+      img{max-width:100%;display:block;}
+      button,select{font:inherit;}
+      @media (prefers-reduced-motion: reduce){
+        *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important;}
+      }
+      a{text-decoration:none;color:inherit;transition:opacity 0.3s;}
+      @media screen and (min-width: 768px){
+        a:hover{opacity:0.8;}
+      }
+      .l-header{position:fixed;z-index:900;top:0;right:0;left:0;display:none;}
+      .p-fv__nav-lang{display:flex;justify-content:center;align-items:center;}
+      @media screen and (min-width: 768px){
+        .p-fv__nav-lang{max-width:-moz-fit-content;max-width:fit-content;justify-content:right;margin-left:auto;}
+      }
+      .p-fv__nav-lang__title{font-size:0.875rem;color:#fff;font-weight:700;position:relative;display:block;cursor:pointer;}
+      .p-fv__nav-lang__title::before{content:"";position:absolute;width:1.25rem;height:1.25rem;top:50%;transform:translateY(-50%);left:-1.875rem;background-image:url(https://kokuryu-restaurant.com/wp-content/themes/originaltheme/assets/images/common/language_logo.png);background-size:contain;background-repeat:no-repeat;}
+      @media screen and (min-width: 768px){
+        .p-fv__nav-lang__title::after{content:"";position:absolute;bottom:-0.9375rem;left:-2.5rem;width:8.75rem;height:1px;background-color:#fff;}
+      }
+      .p-fv__nav-lang-area{position:relative;}
+      .p-fv__nav-lang-area::after{content:"";position:absolute;top:0.75rem;right:0.5rem;width:0.4375rem;height:0.4375rem;background-image:url(https://kokuryu-restaurant.com/wp-content/themes/originaltheme/assets/images/common/triangle.png);background-size:contain;background-repeat:no-repeat;z-index:3;}
+      @media screen and (min-width: 768px){
+        .p-fv__nav-lang-area::after{right:0;}
+      }
+      .p-fv__nav-lang__select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background:none;outline:none;border:none;font-size:0.875rem;background:none;border:none;color:#fff;padding-right:1.25rem;text-align:center;}
+      @media screen and (min-width: 768px){
+        .p-fv__nav-lang__select{padding-right:0.625rem;}
+      }
+      .p-fv__nav-lang__select option{color:#000;}
+      .p-fv__nav-contact{display:none;}
+      .p-fv__nav-contact a{background-color:#aa893a;padding:10px;color:#fff;font-size:14px;font-weight:500;text-align:center;}
+      @media screen and (min-width: 768px){
+        .p-fv__nav-contact{display:none;}
+      }
+      .p-header{background-color:#000;}
+      @media screen and (min-width: 768px){
+        .p-header{height:4.375rem;box-shadow:0px 3.5px 2.5px 0px rgba(0, 0, 0, 0.4);}
+      }
+      .l-header.is-scroll{background-color:#000;display:block;box-shadow:0px 3.5px 2.5px 0px rgba(0, 0, 0, 0.4);}
+      @media screen and (max-width: 768px){
+        .l-header{display:none;}
+        .l-header.is-scroll .p-header__scroll-logo{display:block;}
+      }
+      .p-header__inner{padding-left:0.9375rem;height:inherit;display:flex;justify-content:space-between;padding-top:0.25rem;}
+      @media screen and (min-width: 768px){
+        .l-header.is-scroll{background-color:#000;padding-bottom:1.25rem;display:block;}
+        .p-header__inner{padding-top:initial;padding-left:3.125rem;align-items:flex-start;}
+      }
+      .p-header__logo{max-width:5.6875rem;width:100%;height:inherit;z-index:3;}
+      @media screen and (min-width: 768px){
+        .p-header__logo{max-width:5.6875rem;}
+      }
+      .p-header__logo a{height:inherit;display:flex;align-items:center;}
+      .p-header__logo img{width:100%;height:100%;-o-object-fit:contain;object-fit:contain;}
+      @media screen and (max-width: 768px){
+        .p-header__logo{height:80px;}
+        .p-header__logo a{height:100%;}
+      }
+      .p-fv__nav-contact{z-index:3;}
+      .p-header__nav{display:none;height:inherit;}
+      @media screen and (min-width: 768px){
+        .p-header__nav{display:block;}
+      }
+      .p-header__nav-list{display:flex;height:inherit;}
+      .p-header__nav-item{height:inherit;}
+      .p-header__nav-item.language{display:none;}
+      @media screen and (min-width: 768px){
+        .p-header__nav-item.language{display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;padding:0 1.25rem 0 1.5rem;}
+        .p-header__nav-item.language:after{content:"";position:absolute;top:52%;right:0.5rem;width:0.5rem;height:0.5rem;background-image:url(https://kokuryu-restaurant.com/wp-content/themes/originaltheme/assets/images/common/triangle.png);background-size:contain;background-repeat:no-repeat;z-index:-1;}
+      }
+      .p-header__nav-item.p-header__nav-item--contact{margin-left:0.9375rem;display:flex;align-items:center;}
+      .p-header__nav-item a{padding:0 1.25rem;height:inherit;display:flex;align-items:center;font-size:0.875rem;font-weight:500;line-height:1;color:#fff;text-transform:uppercase;}
+      .p-header__nav-item.p-header__nav-item--contact a{padding:0.625rem 3.75rem;text-align:center;justify-content:center;color:#fff;background-color:#aa893a;}
+      .p-header__menu{display:flex;align-items:center;gap:0.5rem;}
+      @media screen and (min-width: 768px){
+        .p-header__menu{display:none;}
+      }
+      .p-header__menu .p-fv__nav-contact{display:block;}
+      .p-header__menu .p-fv__nav-lang{z-index:3;}
+      .p-header__hamburger{margin:0;padding:0;outline:none;border:none;position:relative;z-index:999;width:2.5rem;height:2.5rem;height:inherit;background-color:transparent;cursor:pointer;transition:0.3s;}
+      @media screen and (min-width: 768px){
+        .p-header__hamburger{display:none;}
+      }
+      .p-header__hamburger span{position:relative;left:50%;transform:translateX(-50%);display:block;width:1.25rem;height:1px;background-color:#fff;transition:0.5s;}
+      .p-header__hamburger span:nth-of-type(1){top:-0.25rem;}
+      .p-header__hamburger span:nth-of-type(2){top:0;}
+      .p-header__hamburger span:nth-of-type(3){top:0.25rem;}
+      .p-header__drawer{padding:3rem 1.25rem;position:fixed;z-index:100;top:0;right:-120%;width:100%;height:100vh;background-color:#aa893a;overflow-y:scroll;scrollbar-width:none;transition:0.6s;}
+      .p-header__drawer::-webkit-scrollbar{display:none;}
+      .p-header__drawer-item a{padding:0.9375rem 0;display:block;font-size:0.875rem;font-weight:700;line-height:1;letter-spacing:0.05em;color:#fff;text-transform:uppercase;border-bottom:0.0625rem solid #fff;}
+      .p-fv__nav-contact .kr{display:none;}
+      .p-fv__nav-contact .kr{display:none;font-style:normal;}
+      .page-template-page-kr-php .p-fv__nav-contact .kr{display:block;}
+      .page-template-page-kr-php .p-fv__nav-contact .kr{display:inline;}
+      @media screen and (max-width: 768px){
+        .p-fv__nav-contact a{display:block;}
+      }
+      .page-template-page-kr-php .p-fv__nav-contact .kr{display:block;}
+      .page-template-page-kr-php .p-fv__nav-contact a span{display:none;}
+      @media screen and (max-width: 768px){
+        .p-fv__nav-contact a{display:block;}
+      }
+      .page-template-page-kr-php .p-fv__nav-contact span{display:none;}
+    }
+  </style>
+</head>
+<body>
+<header class="p-header l-header js-header sub-header is-scroll">
+  <div class="p-header__inner">
+    <h1 class="p-header__logo">
+      <a href="https://kokuryu-restaurant.com/kr">
+        <img class="p-header__scroll-logo" src="http://localhost:63342/kumkang/kokuryu-restaurant.com/wp-content/themes/originaltheme/assets/images/common/logo_yoko.png" alt="黒龍" decoding="async" loading="lazy">
+      </a>
+    </h1>
+    <nav class="p-header__nav">
+      <!-- 韓国語 -->
+      <ul class="p-header__nav-list">
+        <li class="p-header__nav-item">
+          <a href="https://kokuryu-restaurant.com/kr"><span>TOP</span></a>
+        </li>
+        <li class="p-header__nav-item">
+          <a href="https://kokuryu-restaurant.com/kr#about"><span>금강소개</span></a>
+        </li>
+        <li class="p-header__nav-item">
+          <a href="https://kokuryu-restaurant.com/kr#fixation"><span>금강의 고집</span></a>
+        </li>
+        <li class="p-header__nav-item">
+          <a href="https://kokuryu-restaurant.com/kr#menu"><span>메뉴</span></a>
+        </li>
+        <!-- <li class="p-header__nav-item">
+    <a href="#column">コラム</a>
+</li> -->
+        <li class="p-header__nav-item">
+          <a href="https://kokuryu-restaurant.com/kr#news"><span>공지</span></a>
+        </li>
+        <li class="p-header__nav-item">
+          <a href="https://kokuryu-restaurant.com/kr#access"><span>오시는 길</span></a>
+        </li>
+        <li class="p-header__nav-item language">
+          <select class="p-fv__nav-lang__select" id="select_lang" name="select_lang">
+            <option disabled="" selected="">Language</option>
+            <option value="https://kokuryu-restaurant.com/" label="JP">JP</option>
+            <option value="https://kokuryu-restaurant.com/en" label="EN">EN</option>
+            <option value="https://kokuryu-restaurant.com/ch" label="CH">CH</option>
+            <option value="https://kokuryu-restaurant.com/kr" label="KR">KR</option>
+          </select>
+        </li>
+        <li class="p-header__nav-item p-header__nav-item--contact">
+          <a href="#" id="loadReservation2" rel="noopener"><span>예 약 하 기</span></a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="p-header__menu">
+      <div class="p-fv__nav-lang">
+        <label for="select_lang" class="p-fv__nav-lang__title"></label>
+        <div class="p-fv__nav-lang-area">
+          <select class="p-fv__nav-lang__select" id="select_lang" name="select_lang">
+            <option disabled="" selected="">Language</option>
+            <option value="https://kokuryu-restaurant.com/" label="JP">JP</option>
+            <option value="https://kokuryu-restaurant.com/en/" label="EN">EN</option>
+            <option value="https://kokuryu-restaurant.com/ch/" label="CH">CH</option>
+            <option value="https://kokuryu-restaurant.com/kr/" label="KR">KR</option>
+          </select>
+        </div>
+      </div>
+      <div class="p-fv__nav-contact">
+        <a href="https://tabelog.com/kr/osaka/A2701/A270202/27143943/" target="_blank"><span class="kr">예 약 하 기</span></a>
+      </div>
+      <button class="p-header__hamburger js-hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="p-header__drawer js-drawer">
+      <nav class="p-header__drawer-nav">
+        <!-- 韓国語 -->
+        <ul class="p-header__drawer-list">
+          <li class="p-header__drawer-item">
+            <a href="https://kokuryu-restaurant.com/kr/"><span>TOP</span></a>
+          </li>
+          <li class="p-header__drawer-item">
+            <a href="https://kokuryu-restaurant.com/kr#about"><span>금강 소개</span></a>
+          </li>
+          <li class="p-header__drawer-item">
+            <a href="https://kokuryu-restaurant.com/kr#fixation"><span>금강의 마음</span></a>
+          </li>
+          <li class="p-header__drawer-item">
+            <a href="https://kokuryu-restaurant.com/kr#menu"><span>메뉴</span></a>
+          </li>
+          <!-- <li class="p-header__drawer-item">
+  <a href="#">コラム</a>
+</li> -->
+          <li class="p-header__drawer-item">
+            <a href="https://kokuryu-restaurant.com/kr#news"><span>공지</span></a>
+          </li>
+          <li class="p-header__drawer-item">
+            <a href="https://kokuryu-restaurant.com/kr#access"><span>오시는 길</span></a>
+          </li>
+          <li class="p-header__drawer-item">
+            <a href="https://tabelog.com/kr/osaka/A2701/A270202/27143943/" rel="noopener"><span>예 약 하 기</span></a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+<div id="reservation-status-wrapper">
+  <h2 style="background: url('img/label-background.png') center center / cover no-repeat; color: white; padding: 10px 16px; border-radius: 6px; transform: rotate(-2deg); display:inline-block; margin-top:50px;">예약 현황</h2>
+  <iframe src="https://calendar.google.com/calendar/embed?src=juve9ile97%40gmail.com&ctz=Asia%2FSeoul&mode=MONTH&showTitle=0&showPrint=0" style="border: 0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>
+</div>
+<h2 style="background: url('img/label-background1.png') center center / cover no-repeat; color: white; padding: 10px 16px; border-radius: 6px; transform: rotate(-2deg); display:inline-block; margin-left:25%;">예약하기</h2>
+<div class="container">
+  <div class="calendar-section">
+    <input type="text" id="calendar-only" placeholder="날짜 선택" />
+  </div>
+  <div class="form-section">
+    <div class="form-group" style="display: flex; gap: 20px;">
+      <div><label for="visit-name">예약자 성명</label><input type="text" id="visit-name" placeholder="예: 홍길동" style="width: 150px;"></div>
+      <div><label for="visit-time">방문 예정 시간</label><input type="text" id="visit-time" placeholder="예: 14:00" style="width: 150px;"></div>
+    </div>
+    <div class="form-group">
+      <label for="people">인원수</label>
+      <select id="people" style="width: 150px;">
+        <option value="" disabled selected>선택하세요</option>
+        <option value="1">1명</option>
+        <option value="2">2명</option>
+        <option value="3">3명</option>
+        <option value="4">4명 이상</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="contact">연락처</label>
+
+
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="contact" placeholder="예: 010-1234-5678" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="request">요청사항</label>
+      <textarea id="request" rows="4" placeholder="예: 유모차 진입 가능 여부 등"></textarea>
+    </div>
+    <button type="submit">예 약 내 역</button>
+    <div id="summary-box" style="display:none; background:#fafafa; padding:20px; border:1px dashed #ccc; border-radius:10px; margin-top:30px;">
+      <h3>📋 예약 요약</h3>
+      <div id="summary-content" style="line-height: 1.8;"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  flatpickr("#calendar-only", {
+    inline: true,
+    dateFormat: "Y-m-d",
+    locale: "ko"
+  });
+  flatpickr("#visit-time", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i",
+    time_24hr: true,
+    locale: "ko"
+  });
+</script>
+
+<script>
+  document.querySelector("button[type='submit']").addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const date = document.getElementById("calendar-only")._flatpickr.selectedDates[0];
+    const visitTime = document.getElementById("visit-time").value;
+    const visitName = document.getElementById("visit-name").value;
+    const contact = document.getElementById("contact").value;
+    const people = document.getElementById("people").value;
+    const request = document.getElementById("request").value;
+    const dateStr = date ? date.toLocaleDateString('ko-KR') : "선택 안됨";
+
+    // 성 제외 XX 처리 함수
+    function maskLastName(fullName) {
+      if (!fullName) return "";
+      if (fullName.length <= 1) return "XX";
+      return "XX" + fullName.slice(1);
+    }
+    const maskedName = maskLastName(visitName);
+
+    // 구글캘린더 이벤트 생성용 날짜 시간 포맷 함수
+    function toGoogleCalendarDateTime(dateObj, timeStr) {
+      const [h, m] = timeStr.split(':').map(Number);
+      const dt = new Date(dateObj);
+      dt.setHours(h);
+      dt.setMinutes(m);
+      dt.setSeconds(0);
+      // 서울시간 → UTC 변환 (-9시간)
+      const utc = new Date(dt.getTime() - (9 * 60 * 60 * 1000));
+      return utc.toISOString().replace(/-|:|\.\d{3}/g, '').slice(0,15) + 'Z';
+    }
+
+    const startTime = date && visitTime ? toGoogleCalendarDateTime(date, visitTime) : null;
+    const endTime = date && visitTime ? toGoogleCalendarDateTime(date, (parseInt(visitTime.split(':')[0]) + 1) + ":00") : null;
+
+    const calendarUrl = startTime && endTime
+            ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+            `&text=${encodeURIComponent(`[예약] ${maskedName} 방문 예약`)}` +
+            `&dates=${startTime}/${endTime}` +
+            `&details=${encodeURIComponent(`예약자명: ${maskedName}\n연락처: ${contact}\n인원수: ${people}\n요청사항: ${request || "없음"}`)}` +
+            `&sf=true&output=xml`
+            : "https://calendar.google.com/calendar";
+
+    const summary = `
+    - 예약자 성명: <strong>${visitName}</strong><br>
+    - 연락처: <strong>${contact}</strong><br>
+    - 방문 날짜: <strong>${dateStr}</strong><br>
+    - 방문 시간: <strong>${visitTime}</strong><br>
+    - 인원수: <strong>${people}</strong><br>
+    - 요청사항: <strong>${request || "없음"}</strong>
+  `;
+
+    document.getElementById("summary-content").innerHTML = summary;
+    document.getElementById("summary-box").style.display = "block";
+    document.getElementById("summary-box").scrollIntoView({ behavior: "smooth" });
+
+    // 텔레그램 메시지 및 버튼
+    const message = `
+📌 [예약 요청]
+- 이름: ${visitName}
+- 연락처: ${contact}
+- 날짜: ${dateStr}
+- 시간: ${visitTime}
+- 인원수: ${people}
+- 요청사항: ${request || "없음"}
+  `;
+
+    const token = '7589766741:AAHuWcVgDP6MdithUo8B0BZW2q8woy7wZeM';
+    const chatId = '-4875605106';
+
+    const replyMarkup = {
+      inline_keyboard: [
+        [
+          {
+            text: "예약일정추가",
+            url: calendarUrl
+          }
+        ]
+      ]
+    };
+
+    fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'HTML',
+        reply_markup: replyMarkup
+      })
+    }).then(res => {
+      if (res.ok) alert("예약요청이 완료되었습니다.");
+      else alert("예약요청 실패. 유선문의 부탁드립니다");
+    });
+
+  });
+
+
+</script>
+</body>
+</html>
