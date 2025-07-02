@@ -468,7 +468,7 @@
         }
 
         .has-white-border-color {
-            border-color: var(--wp--preset--color--white) !important;
+            border-color: var(--wp--preset--color--white) !ifportant;
         }
 
         .has-pale-pink-border-color {
