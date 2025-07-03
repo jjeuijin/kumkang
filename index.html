@@ -890,9 +890,17 @@
     <section id="about" class="l-about p-about">
             <div class="p-about__inner">
                 <div class="p-about__wrap js-fadeIn">
-                    <h2 class="p-about__title">호치민에 새로운 미식의 장이 <br>열렸습니다. <br>
-                        <strong class="highlight-strong">'원조 짬찜'식당 금강</strong>
-                    </h2>
+                <h2 class="p-about__title">
+                    호치민에 새로운 미식의 장이 <br />
+                    열렸습니다. <br />
+                    <strong class="highlight-strong">'원조 짬찜'식당 금강</strong><br>
+                    <img src="../img/buton.png" alt="버튼" id="openModalBtn" class="only-mobile" style="cursor: pointer; width: 100px; height: 40px; border-radius: 5px;" />
+                    <!-- 모달창 구조 -->
+                    <!-- 모달창 구조 -->
+                    <!-- 모달창 구조 -->
+                    <!-- 모달창 구조 -->
+
+                </h2>
                     <p class="p-about__text u-desktop">
                         <strong class="highlight-strong">'짬찜식당이란?'</strong><br>
                         '짬찜'은 단순히 식사만 하는 곳이 아닙니다.<br>
@@ -1464,7 +1472,33 @@
         </div>
     </div>
 </footer>
+<div id="myModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; /* 스크롤바 제거 */ background-color: rgba(0, 0, 0, 0.4);">
+    <div
+            class="modal-content"
+            style="
+                                        background-color: #fff;
+                                        margin: 10% auto;
+                                        padding: 0;
+                                        border: 1px solid #888;
+                                        width: 430px;
+                                        height: 530px;
+                                        text-align: center;
+                                        position: relative;
+                                        border-radius: 5px; /* 모달 둥근 모서리 */
+                                        overflow: hidden;
+                                    "
+    >
+        <!-- 내용이 모달 경계 넘지 않게 -->
 
+        <span id="closeModalBtn" style="color: #aaa; position: absolute; top: 10px; right: 15px; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+
+        <video id="modalVideo" width="430" height="530" autoplay muted playsinline style="display: block;">
+            <!-- 영상이 꽉 차게 표시 -->
+            <source src="../img/modal.mp4" type="video/mp4" />
+            브라우저가 비디오 태그를 지원하지 않습니다.
+        </video>
+    </div>
+</div>
 <script type="speculationrules">
     {"prefetch":[{"source":"document","where":{"and":[{"href_matches":"\/*"},{"not":{"href_matches":["\/wp-*.php","\/wp-admin\/*","\/wp-content\/uploads\/*","\/wp-content\/*","\/wp-content\/plugins\/*","\/wp-content\/themes\/originaltheme\/*","\/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch,
     .no-prefetch a"}}]},"eagerness":"conservative"}]}
