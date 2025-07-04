@@ -642,11 +642,10 @@
 ">
 
 <script src="kr/js/app.js"></script>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-    import { getDatabase, ref, onChildAdded, push, set } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+    import { getDatabase, ref, onChildAdded, push, set, get } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAce47UcJTVX9m3wj5VK6hXC2oTb4PoMnw",
@@ -659,20 +658,69 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
     const auth = getAuth(app);
+    const db = getDatabase(app);
 
     const chatRef = ref(db, 'chat');
     const chatMessages = document.getElementById("chat-messages");
+    const alertAudio = new Audio('alert/예약.mp3');
+    alertAudio.loop = true;
 
-    // 인증 상태 확인 후 로그인 안 되어있으면 admin.html로 리디렉션
+    const notificationsRef = ref(db, 'notifications');
+
+    let reservations = [];
+    const pageSize = 10;
+    let currentPage = 1;
+
+    function renderPage(page) {
+        const tbody = document.querySelector("table tbody");
+        tbody.innerHTML = "";
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const pageData = reservations.slice(start, end);
+        pageData.forEach(tr => tbody.appendChild(tr));
+        renderPagination();
+    }
+
+    function renderPagination() {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+        const pageCount = Math.ceil(reservations.length / pageSize);
+        for (let i = 1; i <= pageCount; i++) {
+            const btn = document.createElement("button");
+            btn.className = `btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-secondary'}`;
+            btn.textContent = i;
+            btn.addEventListener("click", () => {
+                currentPage = i;
+                renderPage(i);
+            });
+            pagination.appendChild(btn);
+        }
+    }
+
+    function maskLastName(fullName) {
+        if (!fullName) return "";
+        if (fullName.length <= 1) return "XX";
+        return "XX" + fullName.slice(1);
+    }
+
+    function toGoogleCalendarDateTime(dateObj, timeStr) {
+        const [h, m] = timeStr.split(':').map(Number);
+        const dt = new Date(dateObj);
+        dt.setHours(h);
+        dt.setMinutes(m);
+        dt.setSeconds(0);
+        const utc = new Date(dt.getTime() - (9 * 60 * 60 * 1000)); // 한국→UTC
+        return utc.toISOString().replace(/-|:|\.\d{3}/g, '').slice(0,15) + 'Z';
+    }
+
     onAuthStateChanged(auth, (user) => {
         if (!user) {
             window.location.href = "admin.html";
             return;
         }
 
-        // 로그인된 사용자만 아래 기능 사용 가능
+        // 로그인 된 경우에만 채팅 메시지 수신 시작
         onChildAdded(chatRef, (snapshot) => {
             const data = snapshot.val();
             console.log(data);
@@ -696,135 +744,89 @@
             input.value = "";
         });
 
-        let alertAudio = new Audio('alert/예약.mp3');
-        alertAudio.loop = true;
+        // 예약 데이터 초기화 후 새 예약만 알림음 울리도록 설정
+        let initialized = false;
+        get(notificationsRef).then(() => {
+            initialized = true;
+            onChildAdded(notificationsRef, (snapshot) => {
+                const data = snapshot.val();
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${data.name}</td>
+                    <td>${data.date} ${data.time}</td>
+                    <td>${data.people}</td>
+                    <td>${data.contact}</td>
+                    <td>${data.request || "없음"}</td>
+                    <td class="action-cell">
+                        <button class="badge btn-action"></button>
+                        <button class="badge badge-gradient-danger btn-action">반려</button>
+                    </td>
+                    <td class="calendar-cell">
+                        <button class="badge badge-gradient-info btn-calendar">캘린더추가</button>
+                    </td>
+                `;
 
-        const notificationsRef = ref(db, 'notifications');
+                const confirmBtn = tr.querySelectorAll(".btn-action")[0];
+                const rejectBtn = tr.querySelectorAll(".btn-action")[1];
 
-        let reservations = [];
-        const pageSize = 10;
-        let currentPage = 1;
+                if (data.status === "confirmed") {
+                    confirmBtn.textContent = "확인완료";
+                    confirmBtn.className = "badge badge-gradient-success btn-action";
+                    rejectBtn.style.display = "none";
+                } else if (data.status === "rejected") {
+                    rejectBtn.textContent = "취소";
+                    rejectBtn.className = "badge badge-gradient-danger btn-action";
+                    confirmBtn.style.display = "none";
+                } else {
+                    confirmBtn.textContent = "확인대기";
+                    confirmBtn.className = "badge badge-gradient-warning btn-action";
+                }
 
-        function renderPage(page) {
-            const tbody = document.querySelector("table tbody");
-            tbody.innerHTML = "";
-            const start = (page - 1) * pageSize;
-            const end = start + pageSize;
-            const pageData = reservations.slice(start, end);
-            pageData.forEach(tr => tbody.appendChild(tr));
-            renderPagination();
-        }
+                const stopAlert = () => {
+                    alertAudio.pause();
+                    alertAudio.currentTime = 0;
+                };
 
-        function renderPagination() {
-            const pagination = document.getElementById("pagination");
-            pagination.innerHTML = "";
-            const pageCount = Math.ceil(reservations.length / pageSize);
-            for (let i = 1; i <= pageCount; i++) {
-                const btn = document.createElement("button");
-                btn.className = `btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-secondary'}`;
-                btn.textContent = i;
-                btn.addEventListener("click", () => {
-                    currentPage = i;
-                    renderPage(i);
+                confirmBtn.addEventListener("click", () => {
+                    confirmBtn.textContent = "확인완료";
+                    confirmBtn.className = "badge badge-gradient-success btn-action";
+                    rejectBtn.style.display = "none";
+                    stopAlert();
+                    set(ref(db, `notifications/${snapshot.key}/status`), "confirmed");
                 });
-                pagination.appendChild(btn);
-            }
-        }
 
-        function maskLastName(fullName) {
-            if (!fullName) return "";
-            if (fullName.length <= 1) return "XX";
-            return "XX" + fullName.slice(1);
-        }
+                rejectBtn.addEventListener("click", () => {
+                    rejectBtn.textContent = "취소";
+                    rejectBtn.className = "badge badge-gradient-danger btn-action";
+                    confirmBtn.style.display = "none";
+                    stopAlert();
+                    set(ref(db, `notifications/${snapshot.key}/status`), "rejected");
+                });
 
-        function toGoogleCalendarDateTime(dateObj, timeStr) {
-            const [h, m] = timeStr.split(':').map(Number);
-            const dt = new Date(dateObj);
-            dt.setHours(h);
-            dt.setMinutes(m);
-            dt.setSeconds(0);
-            const utc = new Date(dt.getTime() - (9 * 60 * 60 * 1000)); // 한국→UTC
-            return utc.toISOString().replace(/-|:|\.\d{3}/g, '').slice(0,15) + 'Z';
-        }
+                const calendarBtn = tr.querySelector(".btn-calendar");
+                calendarBtn.addEventListener("click", () => {
+                    const startTime = data.date && data.time ? toGoogleCalendarDateTime(new Date(data.date), data.time) : null;
+                    const endTime = data.date && data.time ? toGoogleCalendarDateTime(new Date(data.date), (parseInt(data.time.split(':')[0]) + 1) + ":00") : null;
+                    const maskedName = maskLastName(data.name);
 
-        onChildAdded(notificationsRef, (snapshot) => {
-            const data = snapshot.val();
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${data.name}</td>
-                <td>${data.date} ${data.time}</td>
-                <td>${data.people}</td>
-                <td>${data.contact}</td>
-                <td>${data.request || "없음"}</td>
-                <td class="action-cell">
-                    <button class="badge btn-action"></button>
-                    <button class="badge badge-gradient-danger btn-action">반려</button>
-                </td>
-                <td class="calendar-cell">
-                    <button class="badge badge-gradient-info btn-calendar">캘린더추가</button>
-                </td>
-            `;
+                    const calendarUrl = startTime && endTime
+                        ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+                          `&text=${encodeURIComponent(`[예약] ${maskedName} 방문 예약`)}` +
+                          `&dates=${startTime}/${endTime}` +
+                          `&details=${encodeURIComponent(`예약자명: ${maskedName}\n연락처: ${data.contact}\n인원수: ${data.people}\n요청사항: ${data.request || "없음"}`)}` +
+                          `&sf=true&output=xml`
+                        : "https://calendar.google.com/calendar";
 
-            const confirmBtn = tr.querySelectorAll(".btn-action")[0];
-            const rejectBtn = tr.querySelectorAll(".btn-action")[1];
+                    window.open(calendarUrl, "_blank");
+                });
 
-            if (data.status === "confirmed") {
-                confirmBtn.textContent = "확인완료";
-                confirmBtn.className = "badge badge-gradient-success btn-action";
-                rejectBtn.style.display = "none";
-            } else if (data.status === "rejected") {
-                rejectBtn.textContent = "취소";
-                rejectBtn.className = "badge badge-gradient-danger btn-action";
-                confirmBtn.style.display = "none";
-            } else {
-                confirmBtn.textContent = "확인대기";
-                confirmBtn.className = "badge badge-gradient-warning btn-action";
-            }
+                reservations.unshift(tr);
+                renderPage(1);
 
-            const stopAlert = () => {
-                alertAudio.pause();
-                alertAudio.currentTime = 0;
-            };
-
-            confirmBtn.addEventListener("click", () => {
-                confirmBtn.textContent = "확인완료";
-                confirmBtn.className = "badge badge-gradient-success btn-action";
-                rejectBtn.style.display = "none";
-                stopAlert();
-                set(ref(db, `notifications/${snapshot.key}/status`), "confirmed");
+                if (initialized && alertAudio.paused) {
+                    alertAudio.play().catch(err => console.error("알림음 재생 실패:", err));
+                }
             });
-
-            rejectBtn.addEventListener("click", () => {
-                rejectBtn.textContent = "취소";
-                rejectBtn.className = "badge badge-gradient-danger btn-action";
-                confirmBtn.style.display = "none";
-                stopAlert();
-                set(ref(db, `notifications/${snapshot.key}/status`), "rejected");
-            });
-
-            const calendarBtn = tr.querySelector(".btn-calendar");
-            calendarBtn.addEventListener("click", () => {
-                const startTime = data.date && data.time ? toGoogleCalendarDateTime(new Date(data.date), data.time) : null;
-                const endTime = data.date && data.time ? toGoogleCalendarDateTime(new Date(data.date), (parseInt(data.time.split(':')[0]) + 1) + ":00") : null;
-                const maskedName = maskLastName(data.name);
-
-                const calendarUrl = startTime && endTime
-                    ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
-                    `&text=${encodeURIComponent(`[예약] ${maskedName} 방문 예약`)}` +
-                    `&dates=${startTime}/${endTime}` +
-                    `&details=${encodeURIComponent(`예약자명: ${maskedName}\n연락처: ${data.contact}\n인원수: ${data.people}\n요청사항: ${data.request || "없음"}`)}` +
-                    `&sf=true&output=xml`
-                    : "https://calendar.google.com/calendar";
-
-                window.open(calendarUrl, "_blank");
-            });
-
-            reservations.unshift(tr);
-            renderPage(1);
-
-            if (alertAudio.paused) {
-                alertAudio.play().catch(err => console.error("알림음 재생 실패:", err));
-            }
         });
 
         document.getElementById("enable-sound").addEventListener("click", () => {
@@ -837,6 +839,8 @@
         });
     });
 </script>
+
+
 
 
 <script>
