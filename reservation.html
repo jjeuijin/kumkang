@@ -384,63 +384,59 @@
 </script>
 
 <script>
-  document.querySelector("button[type='submit']").addEventListener("click", function (e) {
-    e.preventDefault();
+document.querySelector("button[type='submit']").addEventListener("click", function (e) {
+  e.preventDefault();
 
-    const date = document.getElementById("calendar-only")._flatpickr.selectedDates[0];
-    const visitTime = document.getElementById("visit-time").value;
-    const visitName = document.getElementById("visit-name").value;
-    const contact = document.getElementById("contact").value;
-    const people = document.getElementById("people").value;
-    const request = document.getElementById("request").value;
-    const dateStr = date ? date.toLocaleDateString('ko-KR') : "선택 안됨";
+  const date = document.getElementById("calendar-only")._flatpickr.selectedDates[0];
+  const visitTime = document.getElementById("visit-time").value;
+  const visitName = document.getElementById("visit-name").value;
+  const contact = document.getElementById("contact").value;
+  const people = document.getElementById("people").value;
+  const request = document.getElementById("request").value;
+  const dateStr = date ? date.toLocaleDateString('ko-KR') : "선택 안됨";
 
-    // 성 제외 XX 처리 함수
-    function maskLastName(fullName) {
-      if (!fullName) return "";
-      if (fullName.length <= 1) return "XX";
-      return "XX" + fullName.slice(1);
-    }
-    const maskedName = maskLastName(visitName);
+  function maskLastName(fullName) {
+    if (!fullName) return "";
+    if (fullName.length <= 1) return "XX";
+    return "XX" + fullName.slice(1);
+  }
+  const maskedName = maskLastName(visitName);
 
-    // 구글캘린더 이벤트 생성용 날짜 시간 포맷 함수
-    function toGoogleCalendarDateTime(dateObj, timeStr) {
-      const [h, m] = timeStr.split(':').map(Number);
-      const dt = new Date(dateObj);
-      dt.setHours(h);
-      dt.setMinutes(m);
-      dt.setSeconds(0);
-      // 서울시간 → UTC 변환 (-9시간)
-      const utc = new Date(dt.getTime() - (9 * 60 * 60 * 1000));
-      return utc.toISOString().replace(/-|:|\.\d{3}/g, '').slice(0,15) + 'Z';
-    }
+  function toGoogleCalendarDateTime(dateObj, timeStr) {
+    const [h, m] = timeStr.split(':').map(Number);
+    const dt = new Date(dateObj);
+    dt.setHours(h);
+    dt.setMinutes(m);
+    dt.setSeconds(0);
+    const utc = new Date(dt.getTime() - (9 * 60 * 60 * 1000));
+    return utc.toISOString().replace(/-|:|\.\d{3}/g, '').slice(0,15) + 'Z';
+  }
 
-    const startTime = date && visitTime ? toGoogleCalendarDateTime(date, visitTime) : null;
-    const endTime = date && visitTime ? toGoogleCalendarDateTime(date, (parseInt(visitTime.split(':')[0]) + 1) + ":00") : null;
+  const startTime = date && visitTime ? toGoogleCalendarDateTime(date, visitTime) : null;
+  const endTime = date && visitTime ? toGoogleCalendarDateTime(date, (parseInt(visitTime.split(':')[0]) + 1) + ":00") : null;
 
-    const calendarUrl = startTime && endTime
-            ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
-            `&text=${encodeURIComponent(`[예약] ${maskedName} 방문 예약`)}` +
-            `&dates=${startTime}/${endTime}` +
-            `&details=${encodeURIComponent(`예약자명: ${maskedName}\n연락처: ${contact}\n인원수: ${people}\n요청사항: ${request || "없음"}`)}` +
-            `&sf=true&output=xml`
-            : "https://calendar.google.com/calendar";
+  const calendarUrl = startTime && endTime
+          ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+          `&text=${encodeURIComponent(`[예약] ${maskedName} 방문 예약`)}` +
+          `&dates=${startTime}/${endTime}` +
+          `&details=${encodeURIComponent(`예약자명: ${maskedName}\n연락처: ${contact}\n인원수: ${people}\n요청사항: ${request || "없음"}`)}` +
+          `&sf=true&output=xml`
+          : "https://calendar.google.com/calendar";
 
-    const summary = `
-    - 예약자 성명: <strong>${visitName}</strong><br>
-    - 연락처: <strong>${contact}</strong><br>
-    - 방문 날짜: <strong>${dateStr}</strong><br>
-    - 방문 시간: <strong>${visitTime}</strong><br>
-    - 인원수: <strong>${people}</strong><br>
-    - 요청사항: <strong>${request || "없음"}</strong>
+  const summary = `
+  - 예약자 성명: <strong>${visitName}</strong><br>
+  - 연락처: <strong>${contact}</strong><br>
+  - 방문 날짜: <strong>${dateStr}</strong><br>
+  - 방문 시간: <strong>${visitTime}</strong><br>
+  - 인원수: <strong>${people}</strong><br>
+  - 요청사항: <strong>${request || "없음"}</strong>
   `;
 
-    document.getElementById("summary-content").innerHTML = summary;
-    document.getElementById("summary-box").style.display = "block";
-    document.getElementById("summary-box").scrollIntoView({ behavior: "smooth" });
+  document.getElementById("summary-content").innerHTML = summary;
+  document.getElementById("summary-box").style.display = "block";
+  document.getElementById("summary-box").scrollIntoView({ behavior: "smooth" });
 
-    // 텔레그램 메시지 및 버튼
-    const message = `
+  const message = `
 📌 [예약 요청]
 - 이름: ${visitName}
 - 연락처: ${contact}
@@ -450,37 +446,20 @@
 - 요청사항: ${request || "없음"}
   `;
 
-    const token = '7589766741:AAHuWcVgDP6MdithUo8B0BZW2q8woy7wZeM';
-    const chatId = '-4875605106';
-
-    const replyMarkup = {
-      inline_keyboard: [
-        [
-          {
-            text: "예약일정추가",
-            url: calendarUrl
-          }
-        ]
-      ]
-    };
-
-    fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-        parse_mode: 'HTML',
-        reply_markup: replyMarkup
-      })
-    }).then(res => {
-      if (res.ok) alert("예약요청이 완료되었습니다.");
-      else alert("예약요청 실패. 유선문의 부탁드립니다");
-    });
-
+  // 수정된 fetch: PythonAnywhere API에만 요청
+  fetch("https://juve999ile.pythonanywhere.com/send-telegram", {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: message,
+      calendar_url: calendarUrl
+    })
+  }).then(res => {
+    if (res.ok) alert("예약요청이 완료되었습니다.");
+    else alert("예약요청 실패. 유선문의 부탁드립니다");
   });
-
-
+});
 </script>
+
 </body>
 </html>
