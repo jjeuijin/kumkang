@@ -119,7 +119,7 @@
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            window.location.href = "admin.html";
+            window.location.href = "main.html";
         } catch (error) {
             alert("로그인 실패: " + error.message);
         }
@@ -139,7 +139,7 @@
 
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            window.location.href = "admin.html";
+            window.location.href = "main.html";
         } catch (error) {
             alert("회원가입 실패: " + error.message);
         }
@@ -149,7 +149,7 @@
     document.querySelector(".google-login-button").addEventListener("click", async () => {
         try {
             await signInWithPopup(auth, new GoogleAuthProvider());
-            window.location.href = "admin.html";
+            window.location.href = "main.html";
         } catch (error) {
             alert("구글 로그인 실패: " + error.message);
         }
