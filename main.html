@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard</title>
+    <link rel="icon" href="kr/img/favicon.ico" />
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
+
+    <link rel="stylesheet" href="kr/css/a-style.css">
+    <style>
+        #chat-box {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 340px;
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+            font-size: 14px;
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 15px;
+            position: relative;
+            clear: both;
+        }
+        .chat-message.staff {
+            background: #e0f7fa;
+            float: left;
+        }
+        .chat-message.admin {
+            background: #c8e6c9;
+            float: right;
+        }
+        .chat-message .time {
+            display: block;
+            font-size: 11px;
+            color: #777;
+            margin-top: 3px;
+        }
+        #reply-box {
+            display: flex;
+        }
+        #reply-message {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 8px 0 0 8px;
+        }
+        #reply-send {
+            border: none;
+            padding: 8px 16px;
+            background: #4e54c8;
+            color: #fff;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+        }
+        #reply-send:hover {
+            background: #8f94fb;
+        }
+        /*! CSS Used from: https://demo.bootstrapdash.com/purple-admin-free/assets/vendors/mdi/css/materialdesignicons.min.css */
+        .mdi:before{display:inline-block;font:normal normal normal 24px/1 "Material Design Icons";font-size:inherit;text-rendering:auto;line-height:inherit;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+        .mdi-account-outline:before{content:"\F013";}
+        .mdi-alert-circle-outline:before{content:"\F5D6";}
+        .mdi-bookmark-outline:before{content:"\F0C3";}
+        .mdi-chart-line:before{content:"\F12A";}
+        .mdi-clock:before{content:"\F953";}
+        .mdi-close-circle-outline:before{content:"\F15A";}
+        .mdi-diamond:before{content:"\FB66";}
+        .mdi-heart-outline:before{content:"\F2D5";}
+        .mdi-home:before{content:"\F2DC";}
+        .mdi-24px.mdi:before{font-size:24px;}
+        /*! CSS Used from: https://demo.bootstrapdash.com/purple-admin-free/assets/css/style.css */
+        *,*::before,*::after{-webkit-box-sizing:border-box;box-sizing:border-box;}
+        nav{display:block;}
+        h2,h3,h4,h5,h6{margin-top:0;margin-bottom:0.5rem;}
+        p{margin-top:0;margin-bottom:1rem;}
+        ul{margin-top:0;margin-bottom:1rem;}
+        img{vertical-align:middle;border-style:none;}
+        table{border-collapse:collapse;}
+        th{text-align:inherit;text-align:-webkit-match-parent;}
+        label{display:inline-block;margin-bottom:0.5rem;}
+        button{border-radius:0;}
+        button:focus:not(:focus-visible){outline:0;}
+        input,button{margin:0;font-family:inherit;font-size:inherit;line-height:inherit;}
+        button,input{overflow:visible;}
+        button{text-transform:none;}
+        button{-webkit-appearance:button;}
+        button:not(:disabled){cursor:pointer;}
+        input[type="checkbox"]{-webkit-box-sizing:border-box;box-sizing:border-box;padding:0;}
+        h2,h3,h4,h5,h6{margin-bottom:0.5rem;font-weight:500;line-height:1.2;}
+        h2{font-size:2rem;}
+        h3{font-size:1.75rem;}
+        h4{font-size:1.5rem;}
+        h5{font-size:1.25rem;}
+        h6{font-size:1rem;}
+        .row{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;margin-right:-20px;margin-left:-20px;}
+        .col-6,.col-12,.col-md-4,.col-md-5,.col-md-7{position:relative;width:100%;padding-right:20px;padding-left:20px;}
+        .col-6{-webkit-box-flex:0;-ms-flex:0 0 50%;flex:0 0 50%;max-width:50%;}
+        .col-12{-webkit-box-flex:0;-ms-flex:0 0 100%;flex:0 0 100%;max-width:100%;}
+        @media (min-width: 768px){
+            .col-md-4{-webkit-box-flex:0;-ms-flex:0 0 33.33333%;flex:0 0 33.33333%;max-width:33.33333%;}
+            .col-md-5{-webkit-box-flex:0;-ms-flex:0 0 41.66667%;flex:0 0 41.66667%;max-width:41.66667%;}
+            .col-md-7{-webkit-box-flex:0;-ms-flex:0 0 58.33333%;flex:0 0 58.33333%;max-width:58.33333%;}
+        }
+        .table{width:100%;margin-bottom:1rem;color:#212529;}
+        .table th,.table td{padding:0.9375rem;vertical-align:top;border-top:1px solid #ebedf2;}
+        .table thead th{vertical-align:bottom;border-bottom:2px solid #ebedf2;}
+        .table-responsive{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+        .form-control{display:block;width:100%;height:2.875rem;padding:0.94rem 1.375rem;font-size:0.8125rem;font-weight:400;line-height:1;color:#495057;background-color:#ffffff;background-clip:padding-box;border:1px solid #ced4da;border-radius:2px;-webkit-transition:border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;transition:border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;transition:border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;transition:border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;}
+        @media (prefers-reduced-motion: reduce){
+            .form-control{-webkit-transition:none;transition:none;}
+        }
+        .form-control:focus{color:#495057;background-color:#fff;border-color:#80bdff;outline:0;-webkit-box-shadow:0 0 0 0.2rem rgba(0, 123, 255, 0.25);box-shadow:0 0 0 0.2rem rgba(0, 123, 255, 0.25);}
+        .form-control::placeholder{color:#c9c8c8;opacity:1;}
+        .form-control:disabled{background-color:#e9ecef;opacity:1;}
+        .form-check{position:relative;display:block;padding-left:1.25rem;}
+        .form-check-label{margin-bottom:0;}
+        .btn{display:inline-block;font-weight:400;color:#343a40;text-align:center;vertical-align:middle;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;background-color:transparent;border:1px solid transparent;padding:0.875rem 2.5rem;font-size:0.875rem;line-height:1;border-radius:0.1875rem;-webkit-transition:color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;transition:color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;transition:color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;transition:color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;}
+        @media (prefers-reduced-motion: reduce){
+            .btn{-webkit-transition:none;transition:none;}
+        }
+        .btn:hover{color:#343a40;text-decoration:none;}
+        .btn:focus{outline:0;-webkit-box-shadow:0 0 0 0.2rem rgba(0, 123, 255, 0.25);box-shadow:0 0 0 0.2rem rgba(0, 123, 255, 0.25);}
+        .btn:disabled{opacity:0.65;}
+        .btn:not(:disabled):not(.disabled){cursor:pointer;}
+        .card{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;min-width:0;word-wrap:break-word;background-color:#fff;background-clip:border-box;border:1px solid rgba(0, 0, 0, 0.125);border-radius:0.3125rem;}
+        .card-body{-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto;min-height:1px;padding:1.25rem;}
+        .card-title{margin-bottom:0.75rem;}
+        .card-text:last-child{margin-bottom:0;}
+        .breadcrumb{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;padding:0.56rem 1.13rem;margin-bottom:1rem;font-size:0.875rem;list-style:none;background-color:transparent;border-radius:0.25rem;}
+        .breadcrumb-item.active{color:#495057;}
+        .badge{display:inline-block;padding:0.25em 0.4em;font-size:75%;font-weight:700;line-height:1;text-align:center;white-space:nowrap;vertical-align:baseline;border-radius:0.25rem;-webkit-transition:color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;transition:color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;transition:color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;transition:color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;}
+        @media (prefers-reduced-motion: reduce){
+            .badge{-webkit-transition:none;transition:none;}
+        }
+        .badge:empty{display:none;}
+        .progress{display:-webkit-box;display:-ms-flexbox;display:flex;height:1rem;overflow:hidden;line-height:0;font-size:0.75rem;background-color:#e9ecef;border-radius:0.25rem;}
+        .progress-bar{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;overflow:hidden;color:#fff;text-align:center;white-space:nowrap;background-color:#007bff;-webkit-transition:width 0.6s ease;transition:width 0.6s ease;}
+        @media (prefers-reduced-motion: reduce){
+            .progress-bar{-webkit-transition:none;transition:none;}
+        }
+        .align-middle{vertical-align:middle!important;}
+        .rounded{border-radius:0.25rem!important;}
+        .rounded-circle{border-radius:50%!important;}
+        .clearfix::after{display:block;clear:both;content:"";}
+        .d-flex,.page-header,.list-wrapper ul li{display:-webkit-box!important;display:-ms-flexbox!important;display:flex!important;}
+        .flex-column-reverse{-webkit-box-orient:vertical!important;-webkit-box-direction:reverse!important;-ms-flex-direction:column-reverse!important;flex-direction:column-reverse!important;}
+        .list-wrapper ul li{-webkit-box-pack:start!important;-ms-flex-pack:start!important;justify-content:flex-start!important;}
+        .page-header{-webkit-box-pack:justify!important;-ms-flex-pack:justify!important;justify-content:space-between!important;}
+        .align-items-center,.page-header,.list-wrapper ul li{-webkit-box-align:center!important;-ms-flex-align:center!important;align-items:center!important;}
+        .float-left{float:left!important;}
+        .float-right{float:right!important;}
+        .w-100{width:100%!important;}
+        .mw-100{max-width:100%!important;}
+        .mb-0{margin-bottom:0!important;}
+        .mr-2{margin-right:0.5rem!important;}
+        .mb-2{margin-bottom:0.5rem!important;}
+        .mt-3{margin-top:1rem!important;}
+        .mr-3{margin-right:1rem!important;}
+        .mb-3{margin-bottom:1rem!important;}
+        .mt-4{margin-top:1.5rem!important;}
+        .mr-4{margin-right:1.5rem!important;}
+        .mt-5{margin-top:3rem!important;}
+        .mb-5{margin-bottom:3rem!important;}
+        .pr-1{padding-right:0.25rem!important;}
+        .pl-1{padding-left:0.25rem!important;}
+        .pt-4{padding-top:1.5rem!important;}
+        .ml-auto,.list-wrapper .remove{margin-left:auto!important;}
+        .font-weight-light{font-weight:300!important;}
+        .font-weight-normal{font-weight:400!important;}
+        .font-weight-bold{font-weight:700!important;}
+        .text-white{color:#ffffff!important;}
+        .text-primary,.list-wrapper .completed .remove{color:#b66dff!important;}
+        .list-wrapper .remove{color:#c3bdbd!important;}
+        .text-muted{color:#9c9fa6!important;}
+        @media print{
+            *,*::before,*::after{text-shadow:none!important;-webkit-box-shadow:none!important;box-shadow:none!important;}
+            thead{display:table-header-group;}
+            tr,img{page-break-inside:avoid;}
+            p,h2,h3{orphans:3;widows:3;}
+            h2,h3{page-break-after:avoid;}
+            .badge{border:1px solid #000;}
+            .table{border-collapse:collapse!important;}
+            .table td,.table th{background-color:#ffffff!important;}
+        }
+        .list-wrapper ul li .form-check,.list-wrapper ul li .form-check .form-check-label{text-overflow:ellipsis;overflow:hidden;max-width:100%;white-space:nowrap;}
+        .form-control,.form-control:focus{-webkit-box-shadow:none;-moz-box-shadow:none;}
+        .form-control{-webkit-box-shadow:none;box-shadow:none;}
+        .form-control:focus{outline:0;-webkit-box-shadow:none;box-shadow:none;}
+        div,h2,h3,h4,h5,p,span{text-shadow:none;}
+        input,.form-control:focus,input:focus,button:focus{outline:none;outline-width:0;outline-color:transparent;-webkit-box-shadow:none;box-shadow:none;outline-style:none;}
+        .btn,.btn:active,.btn:focus,.btn:hover,.btn:visited,button,button:active,button:hover,button:visited,div,input,input:active,input:focus,input:hover,input:visited{-webkit-box-shadow:none;box-shadow:none;}
+        .btn:active:focus,.btn:focus,button,button:active,button:checked,button:focus,button:hover,button:visited{outline:0;outline-offset:0;}
+        input:focus{border-color:transparent;outline:none;}
+        h2,h3,h4,h5,h6{font-family:"ubuntu-medium", sans-serif;}
+        p{font-size:0.875rem;}
+        h2{font-size:1.88rem;}
+        h3{font-size:1.56rem;}
+        h4{font-size:1.13rem;}
+        h5{font-size:1rem;}
+        h6{font-size:.9375rem;}
+        p{font-size:.9375rem;line-height:1.5;}
+        .icon-sm{font-size:1rem;}
+        .page-header{margin:0 0 1.5rem 0;}
+        .page-header .breadcrumb{border:0;margin-bottom:0;}
+        .page-title{color:#343a40;font-size:1.125rem;margin-bottom:0;}
+        .page-title .page-title-icon{display:inline-block;width:36px;height:36px;border-radius:4px;text-align:center;-webkit-box-shadow:0px 3px 8.3px 0.7px rgba(163, 93, 255, 0.35);box-shadow:0px 3px 8.3px 0.7px rgba(163, 93, 255, 0.35);}
+        .page-title .page-title-icon i{font-size:.9375rem;line-height:36px;}
+        .grid-margin{margin-bottom:2.5rem;}
+        .img-sm{width:43px;height:43px;}
+        .stretch-card{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch;}
+        .stretch-card > .card{width:100%;min-width:100%;}
+        .flex-grow{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;}
+        .font-weight-light{font-family:"ubuntu-light", sans-serif;}
+        .font-weight-bold{font-family:"ubuntu-bold", sans-serif;}
+        .font-weight-normal{font-family:"ubuntu-regular", sans-serif;}
+        .bg-gradient-primary{background:-webkit-gradient(linear, left top, right top, from(#da8cff), to(#9a55ff))!important;background:linear-gradient(to right, #da8cff, #9a55ff)!important;}
+        .bg-gradient-success{background:-webkit-gradient(linear, left top, right top, from(#84d9d2), to(#07cdae))!important;background:linear-gradient(to right, #84d9d2, #07cdae)!important;}
+        .bg-gradient-info{background:-webkit-gradient(linear, left top, right top, from(#90caf9), color-stop(99%, #047edf))!important;background:linear-gradient(to right, #90caf9, #047edf 99%)!important;}
+        .bg-gradient-warning{background:-webkit-gradient(linear, left top, right top, from(#f6e384), to(#ffd500))!important;background:linear-gradient(to right, #f6e384, #ffd500)!important;}
+        .bg-gradient-danger{background:-webkit-gradient(linear, left top, right top, from(#ffbf96), to(#fe7096))!important;background:linear-gradient(to right, #ffbf96, #fe7096)!important;}
+        .rounded-legend ul li{list-style-type:none;color:#9c9fa6;font-size:.75rem;}
+        .rounded-legend ul li .legend-dots{width:1rem;height:1rem;border-radius:100%;display:inline-block;vertical-align:text-bottom;margin-right:.5rem;}
+        .rounded-legend.legend-horizontal{display:-webkit-box;display:-ms-flexbox;display:flex;}
+        .rounded-legend.legend-horizontal ul li{display:inline-block;margin-right:1.5rem;}
+        .rounded-legend.legend-top-right ul{float:right;}
+        .rounded-legend.legend-vertical ul li{margin-top:1rem;}
+        .badge{border-radius:.125rem;font-size:11px;font-weight:initial;line-height:1;padding:.375rem .5625rem;font-family:"ubuntu-medium", sans-serif;}
+        .badge-gradient-success{background:-webkit-gradient(linear, left top, right top, from(#84d9d2), to(#07cdae));background:linear-gradient(to right, #84d9d2, #07cdae);color:#ffffff;}
+        .badge-gradient-info{background:-webkit-gradient(linear, left top, right top, from(#90caf9), color-stop(99%, #047edf));background:linear-gradient(to right, #90caf9, #047edf 99%);color:#ffffff;}
+        .badge-gradient-warning{background:-webkit-gradient(linear, left top, right top, from(#f6e384), to(#ffd500));background:linear-gradient(to right, #f6e384, #ffd500);color:#ffffff;}
+        .badge-gradient-danger{background:-webkit-gradient(linear, left top, right top, from(#ffbf96), to(#fe7096));background:linear-gradient(to right, #ffbf96, #fe7096);color:#ffffff;}
+        .progress{border-radius:3px;height:8px;}
+        .progress .progress-bar{border-radius:3px;}
+        .btn{font-size:0.875rem;line-height:1;font-family:"ubuntu-bold", sans-serif;}
+        .btn-gradient-primary{background:-webkit-gradient(linear, left top, right top, from(#da8cff), to(#9a55ff));background:linear-gradient(to right, #da8cff, #9a55ff);border:0;-webkit-transition:opacity 0.3s ease;transition:opacity 0.3s ease;}
+        .btn-gradient-primary:not([disabled]):not(.disabled):active{background:-webkit-gradient(linear, left top, right top, from(#da8cff), to(#9a55ff));background:linear-gradient(to right, #da8cff, #9a55ff);}
+        .btn-gradient-primary:hover{opacity:.8;}
+        .btn-gradient-primary:not(.btn-gradient-light){color:#ffffff;}
+        .btn-gradient-primary:not(.btn-gradient-light):hover,.btn-gradient-primary:not(.btn-gradient-light):focus,.btn-gradient-primary:not(.btn-gradient-light):active{color:#ffffff;}
+        .breadcrumb{border:1px solid #ebedf2;}
+        .breadcrumb .breadcrumb-item{font-size:0.875rem;}
+        .breadcrumb .breadcrumb-item.active{color:rgba(52, 58, 64, 0.8);}
+        .card{border:0;background:#fff;}
+        .card .card-body{padding:2.5rem 2.5rem;}
+        .card .card-title{color:#343a40;margin-bottom:0.75rem;text-transform:capitalize;font-family:"ubuntu-medium", sans-serif;font-size:1.125rem;}
+        .card.card-img-holder{position:relative;}
+        .card.card-img-holder .card-img-absolute{position:absolute;top:0;right:0;height:100%;}
+        .form-check{position:relative;display:block;margin-top:15px;margin-bottom:10px;padding-left:0;}
+        .form-check .form-check-label{display:block;margin-left:1.75rem;font-size:0.875rem;line-height:1.5;}
+        .form-check .form-check-label input{position:absolute;top:0;left:0;margin-left:0;margin-top:0;z-index:1;cursor:pointer;opacity:0;filter:alpha(opacity=0);}
+        .form-check .form-check-label input[type="checkbox"] + .input-helper:before,.form-check .form-check-label input[type="checkbox"] + .input-helper:after{position:absolute;top:0;left:0;}
+        .form-check .form-check-label input[type="checkbox"] + .input-helper:before{content:"";width:18px;height:18px;border-radius:2px;border:solid #b66dff;border-width:2px;-webkit-transition:all;transition:all;transition-duration:0s;-webkit-transition-duration:250ms;transition-duration:250ms;}
+        .form-check .form-check-label input[type="checkbox"] + .input-helper:after{-webkit-transition:all;transition:all;transition-duration:0s;-webkit-transition-duration:250ms;transition-duration:250ms;font-family:Material Design Icons;opacity:0;filter:alpha(opacity=0);-webkit-transform:scale(0);transform:scale(0);content:'\F12C';font-size:.9375rem;font-weight:bold;color:#ffffff;}
+        .form-check .form-check-label input[type="checkbox"]:checked + .input-helper:before{background:-webkit-gradient(linear, left top, right top, from(#da8cff), to(#9a55ff));background:linear-gradient(to right, #da8cff, #9a55ff);border-width:0;}
+        .form-check .form-check-label input[type="checkbox"]:checked + .input-helper:after{width:18px;opacity:1;line-height:18px;filter:alpha(opacity=100);-webkit-transform:scale(1);transform:scale(1);}
+        .form-check .form-check-label input[type="checkbox"]:disabled + .input-helper:before{border-color:#ebedf2;}
+        .form-check .form-check-label input[type="checkbox"]:disabled:checked + .input-helper:after{background:#ebedf2;color:#ffffff;}
+        .form-control{border:1px solid #ebedf2;font-family:"ubuntu-regular", sans-serif;font-size:0.8125rem;}
+        .form-control:focus{background-color:#ffffff;color:#000;outline:none;}
+        ul{padding-left:1rem;font-size:0.875rem;}
+        ul li{line-height:1.8;}
+        .table{margin-bottom:0;}
+        .table thead th{border-top:0;border-bottom-width:1px;font-family:"ubuntu-medium", sans-serif;font-weight:initial;}
+        .table th,.table td{vertical-align:middle;font-size:0.875rem;line-height:1;white-space:nowrap;}
+        .table td img{width:36px;height:36px;border-radius:100%;}
+        .table td .badge{margin-bottom:0;}
+        .add-items{margin-bottom:1.5rem;overflow:hidden;}
+        .add-items input[type="text"]{border-top-right-radius:0;border-bottom-right-radius:0;width:100%;background:transparent;}
+        .add-items .btn{margin-left:.5rem;}
+        .list-wrapper{height:100%;max-height:100%;}
+        .list-wrapper ul{padding:0;text-align:left;list-style:none;margin-bottom:0;}
+        .list-wrapper ul li{font-size:.9375rem;padding:.4rem 0;border-bottom:1px solid #ebedf2;}
+        .list-wrapper ul li:first-child{border-bottom:none;}
+        .list-wrapper ul li .form-check{max-width:90%;margin-top:.25rem;margin-bottom:.25rem;}
+        .list-wrapper input[type="checkbox"]{margin-right:15px;}
+        .list-wrapper .remove{cursor:pointer;font-size:1.438rem;font-weight:600;width:1.25rem;height:1.25rem;line-height:20px;text-align:center;}
+        .list-wrapper .completed{text-decoration:line-through;-webkit-text-decoration-color:#198ae3;text-decoration-color:#198ae3;}
+        .content-wrapper{background:#f2edf3;padding:2.75rem 2.25rem;width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;}
+        /*! CSS Used from: Embedded */
+        .chartjs-render-monitor{animation:chartjs-render-animation 1ms;}
+        .chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;}
+        .chartjs-size-monitor-expand>div{position:absolute;width:1000000px;height:1000000px;left:0;top:0;}
+        .chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0;}
+        /*! CSS Used keyframes */
+        @keyframes chartjs-render-animation{from{opacity:.99;}to{opacity:1;}}
+        /*! CSS Used fontfaces */
+        @font-face{font-family:'ubuntu-medium';src:url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Medium.eot");src:url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Medium.woff2") format("woff2"), url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Medium.woff") format("woff"), url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Medium.ttf") format("truetype");}
+        @font-face{font-family:'ubuntu-light';src:url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Light.eot");src:url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Light.woff2") format("woff2"), url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Light.woff") format("woff"), url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Light.ttf") format("truetype");}
+        @font-face{font-family:'ubuntu-bold';src:url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Bold.eot");src:url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Bold.woff2") format("woff2"), url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Bold.woff") format("woff"), url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Bold.ttf") format("truetype");}
+        @font-face{font-family:'ubuntu-regular';src:url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Regular.eot");src:url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Regular.woff2") format("woff2"), url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Regular.woff") format("woff"), url("https://demo.bootstrapdash.com/purple-admin-free/assets/fonts/Ubuntu/Ubuntu-Regular.ttf") format("truetype");}
+        @font-face{font-family:"Material Design Icons";src:url("https://demo.bootstrapdash.com/purple-admin-free/assets/vendors/mdi/fonts/materialdesignicons-webfont.eot?v=3.7.95");src:url("https://demo.bootstrapdash.com/purple-admin-free/assets/vendors/mdi/fonts/materialdesignicons-webfont.eot?#iefix&v=3.7.95") format("embedded-opentype"),url("https://demo.bootstrapdash.com/purple-admin-free/assets/vendors/mdi/fonts/materialdesignicons-webfont.woff2?v=3.7.95") format("woff2"),url("https://demo.bootstrapdash.com/purple-admin-free/assets/vendors/mdi/fonts/materialdesignicons-webfont.woff?v=3.7.95") format("woff"),url("https://demo.bootstrapdash.com/purple-admin-free/assets/vendors/mdi/fonts/materialdesignicons-webfont.ttf?v=3.7.95") format("truetype");font-weight:normal;font-style:normal;}
+    </style>
+</head>
+<body>
+
+<nav class="sidebar">
+    <header>
+        <div class="image-text">
+            <span class="image">
+                <img src="kr/img/jjlogo.png" alt="">
+            </span>
+            <div class="text logo-text">
+                <span class="name">PING</span>
+                <span class="profession">JJ DEV TEAM</span>
+            </div>
+        </div>
+        <i class="bx bx-chevron-right toggle"></i>
+    </header>
+    <div class="menu-bar">
+        <div class="menu">
+            <li class="search-box"><i class="bx bx-search icon"></i><input type="text" placeholder="Search..."></li>
+            <ul class="menu-links">
+                <li class="nav-link"><a href="#"><i class="bx bx-home-alt icon"></i><span class="text nav-text">Dashboard<span class="tooltip-kor">대시보드</span></span></a></li>
+                <li class="nav-link"><a href="#"><i class="bx bx-calendar icon"></i><span class="text nav-text">Revenue<span class="tooltip-kor">정산내역</span></span></a></li>
+                <li class="nav-link"><a href="booking.html"><i class="bx bx-id-card icon"></i><span class="text nav-text">Notifications<span class="tooltip-kor">예약현황</span></span></a></li>
+                <li class="nav-link submenu-toggle"><a href="#"><i class="bx bx-calendar icon"></i><span class="text nav-text">Management<span class="tooltip-kor">관리항목</span></span></a>
+                    <ul class="submenu">
+                        <li><a href="#">Submenu 1</a></li>
+                        <li><a href="#">Submenu 2</a></li>
+                        <li><a href="#">Submenu 3</a></li>
+                    </ul>
+                </li>
+                <li class="nav-link"><a href="#"><i class="bx bx-heart icon"></i><span class="text nav-text">Likes</span></a></li>
+                <li class="nav-link"><a href="#"><i class="bx bx-wallet icon"></i><span class="text nav-text">Wallets</span></a></li>
+            </ul>
+        </div>
+        <div class="bottom-content">
+            <li><a href="#"><i class="bx bx-log-out icon"></i><span class="text nav-text">Logout</span></a></li>
+            <li class="mode">
+                <div class="sun-moon"><i class="bx bx-moon icon moon"></i><i class="bx bx-sun icon sun"></i></div>
+                <span class="mode-text text">Dark mode</span>
+                <div class="toggle-switch"><span class="switch"></span></div>
+            </li>
+        </div>
+    </div>
+</nav>
+
+<section class="home">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                  <i class="mdi mdi-home"></i>
+                </span> Dashboard
+            </h3>
+            <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="row">
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-danger card-img-holder text-white">
+                    <div class="card-body">
+                        <img src="kr/img/circle.svg" class="card-img-absolute" alt="circle-image">
+                        <h4 class="font-weight-normal mb-3">금일 예약현황 <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+                        </h4>
+                        <h2 class="mb-5"> 건</h2>
+                        <h6 class="card-text">전일대비</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-info card-img-holder text-white">
+                    <div class="card-body">
+                        <img src="kr/img/circle.svg" class="card-img-absolute" alt="circle-image">
+                        <h4 class="font-weight-normal mb-3">금일 출근현황<i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+                        </h4>
+                        <h2 class="mb-5"> 명</h2>
+                        <h6 class="card-text">출근률  %</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-success card-img-holder text-white">
+                    <div class="card-body">
+                        <img src="kr/img/circle.svg" class="card-img-absolute" alt="circle-image">
+                        <h4 class="font-weight-normal mb-3">금일 키워드 검색 건수 <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                        </h4>
+                        <h2 class="mb-5"> 건 </h2>
+                        <h6 class="card-text">전일대비 % 증가</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+        </div>
+        <div class="row">
+            <div class="col-12 grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 class="card-title">금일 예약 LIST</h4>
+                            <button id="enable-sound" class="btn btn-sm btn-primary">
+                                🔔 알림음 켜기
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th> 예약자명 </th>
+                                    <th> 일자/시간 </th>
+                                    <th> 인원수 </th>
+                                    <th> 연락처</th>
+                                    <th> 요청사항 </th>
+                                    <th> 관리자 확인 </th>
+                                    <th> 캘린더 추가 </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="pagination" style="margin-top: 10px; text-align: center;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Recent Updates</h4>
+                        <div class="d-flex">
+                            <div class="d-flex align-items-center mr-4 text-muted font-weight-light">
+                                <i class="mdi mdi-account-outline icon-sm mr-2"></i>
+                                <span>jack Menqu</span>
+                            </div>
+                            <div class="d-flex align-items-center text-muted font-weight-light">
+                                <i class="mdi mdi-clock icon-sm mr-2"></i>
+                                <span>October 3rd, 2018</span>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-6 pr-1">
+                                <img src="assets/images/dashboard/img_1.jpg" class="mb-2 mw-100 w-100 rounded" alt="image">
+                                <img src="assets/images/dashboard/img_4.jpg" class="mw-100 w-100 rounded" alt="image">
+                            </div>
+                            <div class="col-6 pl-1">
+                                <img src="assets/images/dashboard/img_2.jpg" class="mb-2 mw-100 w-100 rounded" alt="image">
+                                <img src="assets/images/dashboard/img_3.jpg" class="mw-100 w-100 rounded" alt="image">
+                            </div>
+                        </div>
+                        <div class="d-flex mt-5 align-items-top">
+                            <img src="assets/images/faces/face3.jpg" class="img-sm rounded-circle mr-3" alt="image">
+                            <div class="mb-0 flex-grow">
+                                <h5 class="mr-2 mb-2">School Website - Authentication Module.</h5>
+                                <p class="mb-0 font-weight-light">It is a long established fact that a reader will be distracted by the readable content of a page.</p>
+                            </div>
+                            <div class="ml-auto">
+                                <i class="mdi mdi-heart-outline text-muted"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-7 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Project Status</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th> # </th>
+                                    <th> Name </th>
+                                    <th> Due Date </th>
+                                    <th> Progress </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td> 1 </td>
+                                    <td> Herman Beck </td>
+                                    <td> May 15, 2015 </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> 2 </td>
+                                    <td> Messsy Adam </td>
+                                    <td> Jul 01, 2015 </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> 3 </td>
+                                    <td> John Richards </td>
+                                    <td> Apr 12, 2015 </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> 4 </td>
+                                    <td> Peter Meggik </td>
+                                    <td> May 15, 2015 </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> 5 </td>
+                                    <td> Edward </td>
+                                    <td> May 03, 2015 </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> 5 </td>
+                                    <td> Ronald </td>
+                                    <td> Jun 05, 2015 </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-gradient-info" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-white">Todo</h4>
+                        <div class="add-items d-flex">
+                            <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?">
+                            <button class="add btn btn-gradient-primary font-weight-bold todo-list-add-btn" id="add-task">Add</button>
+                        </div>
+                        <div class="list-wrapper">
+                            <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Meeting with Alisa <i class="input-helper"></i></label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li class="completed">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox" checked=""> Call John <i class="input-helper"></i></label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Create invoice <i class="input-helper"></i></label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Print Statements <i class="input-helper"></i></label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li class="completed">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox" checked=""> Prepare for presentation <i class="input-helper"></i></label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Pick up kids from school <i class="input-helper"></i></label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="chat-box">
+    <h4>채팅 로그</h4>
+    <div id="chat-messages"></div>
+    <div id="reply-box">
+        <input type="text" id="reply-message" placeholder="관리자 답변...">
+        <button id="reply-send">보내기</button>
+    </div>
+</div>
+<!-- 기존 HTML 제일 하단에 추가 -->
+<img src="img/chat.svg" id="chat-toggle" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 72px;
+    height: 72px;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    border-radius: 50%;
+">
+
+<script src="kr/js/app.js"></script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getDatabase, ref, onChildAdded, push, set } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAce47UcJTVX9m3wj5VK6hXC2oTb4PoMnw",
+        authDomain: "kumkang-11bf2.firebaseapp.com",
+        databaseURL: "https://kumkang-11bf2-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "kumkang-11bf2",
+        storageBucket: "kumkang-11bf2.appspot.com",
+        messagingSenderId: "836413919607",
+        appId: "1:836413919607:web:8eef9847f61f7f33785172"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const chatRef = ref(db, 'chat');
+    const chatMessages = document.getElementById("chat-messages");
+
+    onChildAdded(chatRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log(data);
+        const div = document.createElement("div");
+        div.className = `chat-message ${data.user === "staff1" ? "staff" : "admin"}`;
+        const time = new Date(data.timestamp).toLocaleString();
+        div.innerHTML = `<div>${data.message}<span class="time">${time}</span></div>`;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+    document.getElementById("reply-send").addEventListener("click", async () => {
+        const input = document.getElementById("reply-message");
+        const message = input.value.trim();
+        if (!message) return;
+        await push(ref(db, 'chat'), {
+            user: "admin",
+            message,
+            timestamp: Date.now()
+        });
+        input.value = "";
+    });
+
+    let alertAudio = new Audio('alert/예약.wav');
+    alertAudio.loop = true;
+
+    const notificationsRef = ref(db, 'notifications');
+
+    let reservations = [];
+    const pageSize = 10;
+    let currentPage = 1;
+
+    function renderPage(page) {
+        const tbody = document.querySelector("table tbody");
+        tbody.innerHTML = "";
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const pageData = reservations.slice(start, end);
+        pageData.forEach(tr => tbody.appendChild(tr));
+        renderPagination();
+    }
+
+    function renderPagination() {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+        const pageCount = Math.ceil(reservations.length / pageSize);
+        for (let i = 1; i <= pageCount; i++) {
+            const btn = document.createElement("button");
+            btn.className = `btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-secondary'}`;
+            btn.textContent = i;
+            btn.addEventListener("click", () => {
+                currentPage = i;
+                renderPage(i);
+            });
+            pagination.appendChild(btn);
+        }
+    }
+
+    // 성을 가리기 위한 함수
+    function maskLastName(fullName) {
+        if (!fullName) return "";
+        if (fullName.length <= 1) return "XX";
+        return "XX" + fullName.slice(1);
+    }
+
+    // 구글캘린더용 날짜/시간 변환
+    function toGoogleCalendarDateTime(dateObj, timeStr) {
+        const [h, m] = timeStr.split(':').map(Number);
+        const dt = new Date(dateObj);
+        dt.setHours(h);
+        dt.setMinutes(m);
+        dt.setSeconds(0);
+        const utc = new Date(dt.getTime() - (9 * 60 * 60 * 1000)); // 한국→UTC
+        return utc.toISOString().replace(/-|:|\.\d{3}/g, '').slice(0,15) + 'Z';
+    }
+
+    onChildAdded(notificationsRef, (snapshot) => {
+        const data = snapshot.val();
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${data.name}</td>
+            <td>${data.date} ${data.time}</td>
+            <td>${data.people}</td>
+            <td>${data.contact}</td>
+            <td>${data.request || "없음"}</td>
+            <td class="action-cell">
+                <button class="badge btn-action"></button>
+                <button class="badge badge-gradient-danger btn-action">반려</button>
+            </td>
+            <td class="calendar-cell">
+                <button class="badge badge-gradient-info btn-calendar">캘린더추가</button>
+            </td>
+        `;
+
+        const confirmBtn = tr.querySelectorAll(".btn-action")[0];
+        const rejectBtn = tr.querySelectorAll(".btn-action")[1];
+
+        if (data.status === "confirmed") {
+            confirmBtn.textContent = "확인완료";
+            confirmBtn.className = "badge badge-gradient-success btn-action";
+            rejectBtn.style.display = "none";
+        } else if (data.status === "rejected") {
+            rejectBtn.textContent = "취소";
+            rejectBtn.className = "badge badge-gradient-danger btn-action";
+            confirmBtn.style.display = "none";
+        } else {
+            confirmBtn.textContent = "확인대기";
+            confirmBtn.className = "badge badge-gradient-warning btn-action";
+        }
+
+        const stopAlert = () => {
+            alertAudio.pause();
+            alertAudio.currentTime = 0;
+        };
+
+        confirmBtn.addEventListener("click", () => {
+            confirmBtn.textContent = "확인완료";
+            confirmBtn.className = "badge badge-gradient-success btn-action";
+            rejectBtn.style.display = "none";
+            stopAlert();
+            set(ref(db, `notifications/${snapshot.key}/status`), "confirmed");
+        });
+
+        rejectBtn.addEventListener("click", () => {
+            rejectBtn.textContent = "취소";
+            rejectBtn.className = "badge badge-gradient-danger btn-action";
+            confirmBtn.style.display = "none";
+            stopAlert();
+            set(ref(db, `notifications/${snapshot.key}/status`), "rejected");
+        });
+
+        // 캘린더추가 버튼 이벤트 연결 (추가된 부분)
+        const calendarBtn = tr.querySelector(".btn-calendar");
+        calendarBtn.addEventListener("click", () => {
+            const startTime = data.date && data.time ? toGoogleCalendarDateTime(new Date(data.date), data.time) : null;
+            const endTime = data.date && data.time ? toGoogleCalendarDateTime(new Date(data.date), (parseInt(data.time.split(':')[0]) + 1) + ":00") : null;
+            const maskedName = maskLastName(data.name);
+
+            const calendarUrl = startTime && endTime
+                ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+                `&text=${encodeURIComponent(`[예약] ${maskedName} 방문 예약`)}` +
+                `&dates=${startTime}/${endTime}` +
+                `&details=${encodeURIComponent(`예약자명: ${maskedName}\n연락처: ${data.contact}\n인원수: ${data.people}\n요청사항: ${data.request || "없음"}`)}` +
+                `&sf=true&output=xml`
+                : "https://calendar.google.com/calendar";
+
+            window.open(calendarUrl, "_blank");
+        });
+
+        reservations.unshift(tr);
+        renderPage(1);
+
+        if (alertAudio.paused) {
+            alertAudio.play().catch(err => console.error("알림음 재생 실패:", err));
+        }
+    });
+
+    document.getElementById("enable-sound").addEventListener("click", () => {
+        alertAudio.play().then(() => {
+            alertAudio.pause();
+            alertAudio.currentTime = 0;
+            console.log("알림음 사용 권한 획득 완료!");
+            document.getElementById("enable-sound").style.display = "none";
+        }).catch(err => console.error("권한 획득 실패:", err));
+    });
+</script>
+
+<script>
+    document.getElementById("chat-toggle").addEventListener("click", () => {
+        const chatBox = document.getElementById("chat-box");
+        chatBox.style.display = (chatBox.style.display === "none" || chatBox.style.display === "") ? "flex" : "none";
+    });
+</script>
+
+
+</body>
+</html>
