@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;1,500&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 15px;
+    width: 400px;
+}
+
+.form-container {
+    width: 100%;
+}
+
+.title {
+    text-align: center;
+    margin: 10px 0 30px 0;
+    font-size: 25px;
+    font-weight: 800;
+    color: #000000;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 15px;
+}
+
+.input {
+    border-radius: 20px;
+    border: 1px solid #c0c0c0;
+    outline: 0;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.page-link {
+    text-decoration: underline;
+    margin: 0;
+    color: #747474;
+    margin-left: 10px;
+}
+
+.page-link-label {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    color: #b9b9b9;
+}
+
+.page-link-label:hover {
+    color: #000;
+}
+
+.form-btn {
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 0;
+    background: teal;
+    color: white;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.form-btn:active {
+    box-shadow: none;
+}
+
+.sign-up-label,
+.login-label {
+    margin: 0;
+    font-size: 13px;
+    color: #b9b9b9;
+    margin-left: 10px;
+}
+
+.sign-up-link,
+.login-link {
+    margin-left: 1px;
+    font-size: 13px;
+    text-decoration: underline;
+    color: rgb(0, 48, 48);
+    cursor: pointer;
+    font-weight: 800;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-top: 20px;
+    gap: 15px;
+}
+
+.apple-login-button,
+.google-login-button {
+    border-radius: 20px;
+    padding: 10px 15px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    gap: 5px;
+}
+
+.apple-login-button {
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #000;
+}
+
+.google-login-button {
+    border: 2px solid #747474;
+    background: #fff;
+    color: #000;
+}
+
+.apple-icon,
+.google-icon {
+    font-size: 18px;
+    margin-bottom: 1px;
+}
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: 50%;
+    height: 50%;
+    z-index: -1;
+    object-fit: cover;
+    opacity: 1; /* 필요시 어둡게하려면 0.7 같은 값 */
+}
