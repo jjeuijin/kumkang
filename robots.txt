@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://호치민금강.com/sitemap.xml
